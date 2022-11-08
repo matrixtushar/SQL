@@ -1,0 +1,26 @@
+SELECT INC.Id_9A505725_E2F2_447F_271B_9B9F4F0D190C AS [IR Number], INC.DisplayName AS [Display Name], CreatedDate_6258638D_B885_AB3C_E316_D00782B8F688 AS [Date Created], Urgency_D4A8FF0E_3074_B44F_54AD_CC201ABD9A6A AS Urgency, Title_9691DD10_7211_C835_E3E7_6B38AF8B8104 AS Title, 
+             Status_785407A9_729D_3A74_A383_575DB0CD50ED AS Status, ResolvedDate_D2A4C73F_01B8_29C5_895B_5BE4C3DFAC4E AS [Date Resolved], TierQueue_1E9615C2_3386_2452_BA83_05B2169DF38C AS Queue, Priority_B930B964_A1C4_0B5A_B2D1_BFBE9ECDC794 AS Priority, 
+             Escalated_525F1F92_CEB3_079D_C0A5_E7A06AC4D6A5 AS Escalated, AssignedToUser.DisplayName AS [Assigned To]
+FROM     MTV_System$WorkItem$Incident as INC
+
+                left outer Join
+                                (
+                                           select 
+                                                      rel1.SourceEntityId
+                                                    , Users.DisplayName
+                                                    , Users.UserName_6AF77E23_669B_123F_B392_323C17097BBD
+                                           from
+                                                      MTV_System$Domain$User as Users
+                                                      inner join
+                                                                 Relationship as rel1
+                                                                 on
+                                                                            Users.BaseManagedEntityID=Rel1.TargetEntityId
+                                )
+                                as AssignedToUser
+                                on
+                                                AssignedToUser.SourceEntityId=INC.BaseManagedEntityId
+
+
+
+WHERE   (TierQueue_1E9615C2_3386_2452_BA83_05B2169DF38C = '4C47808A-2A86-F666-E7B7-BC5DD86748C6') AND (CreatedDate_6258638D_B885_AB3C_E316_D00782B8F688 > CONVERT(DATETIME, '2022-08-01 00:00:00', 102) and  AssignedToUser.DisplayName ='IT-Service (SMP)' and INC.ResolvedDate_D2A4C73F_01B8_29C5_895B_5BE4C3DFAC4E IS NULL)
+ORDER BY [IR Number]
